@@ -4,7 +4,7 @@ Utility to find out which servers in the School of Mathematics and Statistics at
 the University of Sydney are available to use.
 
 Example usage:
-source("topserveR.R")
+```source("topserveR.R")
 > source("topserveR.R")
 > topserver()
  [1] "anaona: Idle time 61.04% on 40 CPUs over  52.78 days; load 2.05 3/345 14728"  
@@ -27,6 +27,6 @@ source("topserveR.R")
 [18] "parona: Idle time 99.82% on  8 CPUs over  52.78 days; load 0.05 1/130 10026"  
 [19] "savona: Idle time 39.40% on 32 CPUs over  52.78 days; load 15.97 5/1132 13169"
 [20] "verona: Idle time 59.92% on 48 CPUs over  52.79 days; load 24.56 26/775 12182"
-> 
+> ```
 
 Feel free to fork, hack new features, package, etc.!
