@@ -30,4 +30,4 @@ Example usage:
 >
 ```
 
-Feel free to fork, hack new features, package, etc.!
+Feel free to fork, add new features, package, etc.!
