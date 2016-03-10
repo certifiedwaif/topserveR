@@ -1,6 +1,6 @@
-Package: topserveR
-Title: topserveR
-Version: 0.0.0.9000
+Package: topserver
+Title: topserver
+Version: 0.1
 Authors@R: person("Mark", "Greenaway", email = "markg@maths.usyd.edu.au", role = c("aut", "cre"))
 Description: Queries Paul Szabo's topserver page.
 Depends:
