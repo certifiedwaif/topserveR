@@ -28,8 +28,13 @@
 get_topserver <- function()
 {
 	http_response <- RCurl::getURL("http://www.maths.usyd.edu.au/ub/psz/loc/topserver")
-	lines <- str_split(http_response, "\\n")[[1]]
-	lines <- lines[11:30]
-	lines2 <- map_chr(lines, function (s) str_replace(s, "<a href='#.*'>(.*)</a>: ", "\\1: "))
-	return(lines2)
+	html_lines <- str_split(http_response, "\\n")[[1]]
+	html_lines <- html_lines[11:30]
+	dehtml_lines <- map_chr(html_lines, function (s) str_replace(s, "<a href='#.*'>(.*)</a>: ", "\\1: "))
+	# Sample line: "anaona: Idle time 53.54% on 40 CPUs over  60.59 days; load 40.13 41/385 38604"
+	# The pattern is:
+	# host: Idle time dd.dd% on dd CPUs over *dd.dd days; load dd.dd dd/ddd ddddd
+	pattern <- "(.*): Idle time (\\d+\\.\\d+)% on (dd) CPUs over *(\\d+.\\d+) days; load (\\d+.\\d+) (\\d+/\\d+) (\\d+)"
+	matches <- str_extract_all(dehtml_lines, pattern)
+	return(matches)
 }
