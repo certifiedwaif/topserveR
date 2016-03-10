@@ -4,8 +4,8 @@ Utility to find out which servers in the School of Mathematics and Statistics at
 the University of Sydney are available to use.
 
 Example usage:
-```source("topserveR.R")
-> source("topserveR.R")
+```
+> library(topserveR)
 > topserver()
  [1] "anaona: Idle time 61.04% on 40 CPUs over  52.78 days; load 2.05 3/345 14728"  
  [2] "anbona: Idle time 30.09% on 40 CPUs over  52.78 days; load 50.00 51/430 29895"

@@ -3,10 +3,12 @@ Title: topserveR
 Version: 0.0.0.9000
 Authors@R: person("Mark", "Greenaway", email = "markg@maths.usyd.edu.au", role = c("aut", "cre"))
 Description: Queries Paul Szabo's topserver page.
-Depends: R (>= 3.2.2)
+Depends:
+    R (>= 3.2.2)
 Imports:
     RCurl,
     stringr,
     purrr
 License: What license is it under?
 LazyData: true
+RoxygenNote: 5.0.1
