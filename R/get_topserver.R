@@ -1,41 +1,58 @@
 # get_topserver.R
 
 #' Query Paul's topserver page
-#' @return A character vector of information about the servers from the topserver page.
+#' @return A data frame
 #' @examples
-#' > topserver()
-#' [1] "anaona: Idle time 61.04% on 40 CPUs over  52.78 days; load 2.05 3/345 14728"  
-#' [2] "anbona: Idle time 30.09% on 40 CPUs over  52.78 days; load 50.00 51/430 29895"
-#' [3] "ancona: Idle time 85.98% on 40 CPUs over  52.78 days; load 2.07 3/352 11143"  
-#' [4] "andona: Idle time 46.86% on 40 CPUs over  52.78 days; load 40.07 41/369 6075" 
-#' [5] "bivona: Idle time 89.83% on 32 CPUs over  52.78 days; load 0.05 1/278 26069"  
-#' [6] "briona: Idle time 99.51% on 24 CPUs over  52.78 days; load 0.05 1/230 11857"  
-#' [7] "cetona: Idle time 98.84% on  8 CPUs over  21.18 days; load 0.05 1/130 31726"  
-#' [8] "esaona: Idle time 37.47% on 32 CPUs over  52.78 days; load 32.11 33/326 15939"
-#' [9] "esbona: Idle time 85.73% on 32 CPUs over  52.78 days; load 0.05 1/313 31753"  
-#'[10] "escona: Idle time 84.79% on 32 CPUs over  52.78 days; load 0.05 1/290 27626"  
-#'[11] "esdona: Idle time 54.08% on 32 CPUs over  52.78 days; load 32.13 33/327 7840" 
-#'[12] "gemona: Idle time100.00% on 24 CPUs over  52.78 days; load 0.05 1/230 14208"  
-#'[13] "oraona: Idle time 83.99% on 32 CPUs over  52.78 days; load 14.60 14/702 15421"
-#'[14] "orbona: Idle time 84.47% on 32 CPUs over  52.78 days; load 17.31 15/871 6256" 
-#'[15] "orcona: Idle time 87.05% on 32 CPUs over  52.78 days; load 14.53 14/701 19117"
-#'[16] "ordona: Idle time 88.29% on 32 CPUs over  52.78 days; load 14.49 14/702 28129"
-#'[17] "ossona: Idle time 99.61% on  8 CPUs over  52.78 days; load 0.05 1/130 9903"   
-#'[18] "parona: Idle time 99.82% on  8 CPUs over  52.78 days; load 0.05 1/130 10026"  
-#'[19] "savona: Idle time 39.40% on 32 CPUs over  52.78 days; load 15.97 5/1132 13169"
-#'[20] "verona: Idle time 59.92% on 48 CPUs over  52.79 days; load 24.56 26/775 12182"
+#'> get_topserver()
+#'   hostnames Idle.time CPUs  days  load numerator denominator mystery
+#'1     anaona     53.50   40 60.64 40.14        41         385   39740
+#'2     anbona     26.28   40 60.64 49.97        51         430    7054
+#'3     ancona     75.20   40 60.64 39.14        40         387   35428
+#'4     andona     40.94   40 60.64 38.05        39         367   33184
+#'5     bivona     87.84   32 60.64 31.09        32         318    3135
+#'6     briona     95.32   24 60.64  8.05         9         256    7208
+#'7     cetona     99.15    8 29.04  0.05         1         130   26051
+#'8     esaona     32.62   32 60.64 32.11        33         326   21900
+#'9     esbona     74.67   32 60.64 32.06        33         331   28555
+#'10    escona     73.85   32 60.64 32.08        34         327   26460
+#'11    esdona     47.07   32 60.64 32.10        33         324    8797
+#'12    gemona    100.00   24 60.64  0.05         1         230    8494
+#'13    oraona     81.44   32 60.64 33.07        34         328   13174
+#'14    orbona     78.62   32 60.64 33.08        34         340    5594
+#'15    orcona     80.96   32 60.64 33.08        34         327   16024
+#'16    ordona     82.29   32 60.64 33.08        34         328   22895
+#'17    ossona     99.66    8 60.64  0.05         1         127    4115
+#'18    parona     99.85    8 60.64  0.05         1         127    4107
+#'19    savona     44.01   32 60.64 34.97        25        1231   17344
+#'20    verona     61.41   48 60.65 21.93        22         652   29479
 #' @export
 get_topserver <- function()
 {
 	http_response <- RCurl::getURL("http://www.maths.usyd.edu.au/ub/psz/loc/topserver")
+
 	html_lines <- str_split(http_response, "\\n")[[1]]
 	html_lines <- html_lines[11:30]
 	dehtml_lines <- map_chr(html_lines, function (s) str_replace(s, "<a href='#.*'>(.*)</a>: ", "\\1: "))
+
 	# Sample line: "anaona: Idle time 53.54% on 40 CPUs over  60.59 days; load 40.13 41/385 38604"
 	# The pattern is:
 	# host: Idle time dd.dd% on dd CPUs over *dd.dd days; load dd.dd dd/ddd ddddd
-	pattern <- "(.*):.*Idle time (.*)% on (.*) CPUs over * (.*) days; load (.*) (.*)/(.*) (.*)"
-	matches <- str_extract_all(dehtml_lines, pattern)
-	matches[, 2:ncol(matches)] <- as.numeric(matches[, 2:ncol(matches)])
-	return(matches)
+	pattern <- "(.*):.*Idle time(.*)% on (.*) CPUs over * (.*) days; load (.*) (.*)/(.*) (.*)"
+	matches <- map(dehtml_lines, function(s) str_match(s, pattern))
+
+	# matches is a list. Convert it to a matrix.
+	hostnames <- vector("character", length(matches))
+	mat <- matrix(0, nrow=length(matches), ncol=7)
+	for (i in 1:length(matches)) {
+		hostnames[i] <- matches[[i]][2]
+		for (j in 1:7) {
+			mat[i, j] <- as.numeric(matches[[i]][2 + j])
+		}
+	}
+	colnames(mat) <- c("Idle time", "CPUs", "days", "load", "numerator", "denominator", "mystery")
+	df <- data.frame(mat)
+	df$hostnames <- hostnames
+	df <- df[c(8, 1:7)]
+
+	return(df)
 }
