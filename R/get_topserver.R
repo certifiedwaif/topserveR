@@ -34,7 +34,8 @@ get_topserver <- function()
 	# Sample line: "anaona: Idle time 53.54% on 40 CPUs over  60.59 days; load 40.13 41/385 38604"
 	# The pattern is:
 	# host: Idle time dd.dd% on dd CPUs over *dd.dd days; load dd.dd dd/ddd ddddd
-	pattern <- "(.*): Idle time (\\d+\\.\\d+)% on (dd) CPUs over *(\\d+.\\d+) days; load (\\d+.\\d+) (\\d+/\\d+) (\\d+)"
+	pattern <- "(.*):.*Idle time (.*)% on (.*) CPUs over * (.*) days; load (.*) (.*)/(.*) (.*)"
 	matches <- str_extract_all(dehtml_lines, pattern)
+	matches[, 2:ncol(matches)] <- as.numeric(matches[, 2:ncol(matches)])
 	return(matches)
 }
